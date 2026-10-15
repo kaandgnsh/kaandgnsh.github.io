@@ -269,15 +269,22 @@ function init(): void {
       /* Hide below-the-fold blocks only now that this script is known to run. */
       const fold = innerHeight * 0.92;
       reveals.forEach((el) => {
-        if (el.getBoundingClientRect().top < fold) el.classList.add("is-in");
+        if (el.getBoundingClientRect().top < fold) el.classList.add("is-in", "is-settled");
       });
       root.classList.add("reveal-ready");
       const io = new IntersectionObserver(
         (entries) => {
+          /* Blocks entering together (a grid of cards, a list) arrive in sequence. */
+          let n = 0;
           for (const e of entries) {
             if (e.isIntersecting) {
-              e.target.classList.add("is-in");
-              io.unobserve(e.target);
+              const el = e.target as HTMLElement;
+              el.style.setProperty("--rd", `${Math.min(n++, 5) * 70}ms`);
+              el.classList.add("is-in");
+              el.addEventListener("transitionend", (ev) => {
+                if (ev.target === el && ev.propertyName === "opacity") el.classList.add("is-settled");
+              }, { signal });
+              io.unobserve(el);
             }
           }
         },

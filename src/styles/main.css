@@ -633,17 +633,43 @@ a.row__link:hover .row__ic { color: var(--c-green); transform: translate(2px, -2
 .js [data-rise] { opacity: 0; animation: rise 820ms var(--ease) forwards; animation-delay: calc(var(--d, 0) * 80ms + 60ms); }
 /* scroll reveal: only once main.js has confirmed it is running */
 .reveal-ready [data-reveal]:not(.is-in) { opacity: 0; transform: translateY(12px); }
-.reveal-ready [data-reveal] { transition: opacity 700ms var(--ease), transform 700ms var(--ease); }
+/* Once settled, the block's own transitions (hover, focus) take over again. */
+.reveal-ready [data-reveal]:not(.is-settled) { transition: opacity 700ms var(--ease), transform 700ms var(--ease); transition-delay: var(--rd, 0ms); }
+
+/* Ambient light behind the hero: two soft pools that drift very slowly. */
+.hero { isolation: isolate; }
+.hero::before {
+  content: ""; position: absolute; z-index: -1; inset: -20% -10% auto auto; width: min(70rem, 120vw); aspect-ratio: 1; pointer-events: none;
+  background:
+    radial-gradient(closest-side at 62% 38%, color-mix(in oklab, var(--c-green) 13%, transparent), transparent),
+    radial-gradient(closest-side at 30% 66%, color-mix(in oklab, var(--c-brass) 9%, transparent), transparent);
+  animation: drift 34s ease-in-out infinite alternate;
+}
+@keyframes drift {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to { transform: translate3d(-6%, 5%, 0) scale(1.08); }
+}
+
+/* "Available" indicator: one slow ring, like a signal light. */
+.dot--live { position: relative; }
+.dot--live::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: var(--c-green); opacity: 0; animation: ping 2.8s cubic-bezier(0, 0, 0.2, 1) 1.2s infinite; }
+@keyframes ping { 0% { transform: scale(1); opacity: 0.5; } 70%, 100% { transform: scale(2.8); opacity: 0; } }
+
+/* Section marker: a short brass rule draws in once the heading is revealed. */
+.sec-head .eyebrow::after { content: ""; align-self: center; width: 2.5rem; height: 1px; background: var(--c-brass-line); transform-origin: left; }
+.reveal-ready .sec-head .eyebrow::after { transform: scaleX(0); transition: transform 900ms var(--ease) 250ms; }
+.reveal-ready .sec-head.is-in .eyebrow::after { transform: none; }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; transition-delay: 0ms !important; }
   .js [data-reveal], .js [data-rise] { opacity: 1; transform: none; }
+  .hero::before, .dot--live::after { animation: none; }
   @view-transition { navigation: none; }
 }
 
 @media print {
-  .nav, .sheet, .dock, .palette, .progress, .skip { display: none !important; }
+  .nav, .sheet, .dock, .palette, .progress, .skip, .hero::before { display: none !important; }
   :root { color-scheme: light; }
   body { background: #fff; }
   .footer { background: none; color: #000; }
