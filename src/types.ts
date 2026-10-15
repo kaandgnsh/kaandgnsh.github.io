@@ -65,25 +65,70 @@ export interface ProjectImage {
   caption?: L;
 }
 
+/** A code block from a README, drawn as a terminal window. */
+export interface Snippet {
+  label: L;
+  code: string;
+  /** "bash" (default) and "powershell" get prompts; "text" is plain output. */
+  shell?: "bash" | "powershell" | "fish" | "text";
+  /** A sentence under the block, from the README. */
+  note?: L;
+}
+
+export interface ProjectTable {
+  id: string;
+  title: L;
+  lede?: L;
+  cols: L[];
+  /** Cells support `code` spans. */
+  rows: L[][];
+}
+
+export interface ProjectNotice {
+  title: L;
+  text: L;
+}
+
 export interface Project {
   slug: string;
   name: string;
   repo: string;
   tagline: L;
-  /** Purpose. Must come from the repository. */
+  /** Opening paragraph, from the repository README. */
   purpose: L;
+  /** Further overview paragraphs. */
+  overview?: L<string[]>;
+  /** Warning / important boxes from the README. */
+  notices?: ProjectNotice[];
   category: L;
   languages: string[];
   tech: string[];
+  license?: string;
   /** One real command from the README, shown as a terminal line. */
   cmd?: string;
-  /** Capabilities listed in the repository README. */
+  /** Feature list; text before the first ": " is set in bold. */
   capabilities: L<string[]>;
-  usage: L<string[]>;
-  /** Responsible-use notes grounded in the README. */
+  requirements?: L<string[]>;
+  quickstart?: Snippet[];
+  options?: { flag: string; desc: L; required?: boolean }[];
+  tables?: ProjectTable[];
+  output?: { code: string; note?: L };
+  /** Free sections from the README (e.g. Tor authentication). */
+  extra?: { id: string; title: L; paras?: L<string[]>; list?: L<string[]> }[];
+  /** Privacy, safety and responsible-use notes from the README. */
   responsible: L<string[]>;
-  /** Top-level entries visible in the repository. */
-  structure: string[];
+  testing?: { cmd: string; text: L<string[]> };
+  roadmap?: { done: boolean; text: L }[];
+  troubleshooting?: { q: L; a: L; cmd?: string }[];
+  /** The README's project-structure tree, verbatim. */
+  tree?: string;
+  /** What keeps the tool safe out of the box (used in the trust strip). */
+  safeDefault?: L;
+  /** Tests run in GitHub Actions. */
+  ci?: boolean;
+  /** Legacy fields, kept for hidden entries. */
+  usage?: L<string[]>;
+  structure?: string[];
   facts: { label: L; value: L }[];
   /** Real screenshots only. Rendered as a "Screenshots" block when present. */
   images?: ProjectImage[];

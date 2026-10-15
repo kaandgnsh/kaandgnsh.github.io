@@ -42,7 +42,7 @@ Bileşenlere dokunmana gerek yok. Kişisel her şey `src/data/` ve `src/i18n/` i
 | Dosya | İçerik |
 | --- | --- |
 | `src/data/site.ts` | Ad, e-posta, bağlantılar, giriş cümlesi, hakkımda metni, `openToInternship` (staja açığım satırı), `photo`, `cv`, `showRepoLinks`, `showGithubSection` |
-| `src/data/projects.ts` | Projeler. Her biri iki dilli. `caseStudy: true` ise kendi sayfası olur, `hidden: true` ise gizlenir |
+| `src/data/projects.ts` | Projeler, GitHub README’leri kadar ayrıntılı ve iki dilli: özellikler, `quickstart` (terminal pencereleri), `options` (CLI tablosu), `tables`, `output`, `testing`, `roadmap`, `troubleshooting`, `tree`. `caseStudy: true` ise kendi sayfası olur, `hidden: true` ise gizlenir |
 | `src/data/posts.ts` | Eski notlar. Sitede blog bölümü yok; tüm yazılar `draft: true` ile kapalı tutuluyor |
 | `src/data/skills.ts` | Kullandıkların ve güvenlik ilgi alanların |
 | `src/data/credentials.ts` | Elle yazılan sertifikalar |

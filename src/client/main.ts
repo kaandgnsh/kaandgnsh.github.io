@@ -260,6 +260,29 @@ function init(): void {
     }, { signal });
   }
 
+  /* ── Copy buttons on README code blocks ── */
+  const codeBtns = $$<HTMLButtonElement>("[data-copy-code]");
+  if (codeBtns.length && navigator.clipboard) {
+    root.classList.add("can-copy");
+    codeBtns.forEach((b) => {
+      let t: number | undefined;
+      b.addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText(b.dataset["copyCode"] ?? "");
+        } catch {
+          return;
+        }
+        b.classList.add("is-copied");
+        b.textContent = S["codeCopied"] ?? "Copied";
+        clearTimeout(t);
+        t = window.setTimeout(() => {
+          b.classList.remove("is-copied");
+          b.textContent = S["codeCopy"] ?? "Copy";
+        }, 1800);
+      }, { signal });
+    });
+  }
+
   /* ── 404: show the address that was asked for ── */
   const nfUrl = $<HTMLElement>("[data-nf-url]");
   if (nfUrl) nfUrl.textContent = location.href;

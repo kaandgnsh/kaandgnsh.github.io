@@ -5,7 +5,7 @@ import type { Block, Post, Project } from "../types.ts";
 import { icons } from "./icons.ts";
 import type { PageFrame } from "./layout.ts";
 import { renderCredentialsBody, renderHomeBody, visibleProjects } from "./sections.ts";
-import { asset, cmdLine, esc, fmtDate, href, inline, pick, sectionHref } from "./util.ts";
+import { asset, cmdLine, esc, fmtDate, href, inline, pick, sectionHref, termWindow } from "./util.ts";
 import type { RenderContext } from "./util.ts";
 
 export const homeFrame = (ctx: RenderContext): PageFrame => ({
@@ -48,22 +48,98 @@ const pager = (prev?: PagerCell, next?: PagerCell): string => {
 };
 
 /* ───────────── Case study ───────────── */
+/** Feature line: the text before the first ": " is the lead, set in bold (as in the READMEs). */
+const feature = (x: string): string => {
+  const m = /^([^:]{2,60}):\s(.+)$/.exec(x);
+  return m ? `<strong>${inline(m[1] ?? "")}:</strong> ${inline(m[2] ?? "")}` : inline(x);
+};
+
 export const caseStudyFrame = (ctx: RenderContext, p: Project): PageFrame => {
   const t = ui[ctx.lang];
   const all = visibleProjects().filter((x) => x.caseStudy);
   const idx = all.findIndex((x) => x.slug === p.slug);
   const prevP = all.length > 1 ? all[(idx - 1 + all.length) % all.length] : undefined;
   const nextP = all.length > 1 ? all[(idx + 1) % all.length] : undefined;
+  const tw = (label: string, code: string, shell?: "bash" | "powershell" | "fish" | "text", note?: string): string =>
+    termWindow({ label, code, shell, note, copy: t.cs.copy });
 
   const sections: Section[] = [];
-  sections.push({ id: "overview", label: t.cs.overview, html: `<p>${esc(pick(ctx, p.purpose))}</p>${tags(p.tech)}` });
-  sections.push({ id: "what", label: t.cs.what, html: list(pick(ctx, p.capabilities)) });
-  const cmd = p.cmd ? cmdLine(p.cmd, true) : "";
-  sections.push({ id: "run", label: t.cs.run, html: cmd + list(pick(ctx, p.usage)) });
+  const notices = (p.notices ?? [])
+    .map((n) => `<aside class="notice notice--cs" role="note"><span class="dot dot--alert" aria-hidden="true"></span><p><strong>${esc(pick(ctx, n.title))}.</strong> ${inline(pick(ctx, n.text))}</p></aside>`)
+    .join("");
+  sections.push({
+    id: "overview",
+    label: t.cs.overview,
+    html: `<p class="cs__lead">${inline(pick(ctx, p.purpose))}</p>${(p.overview ? pick(ctx, p.overview) : []).map((x) => `<p>${inline(x)}</p>`).join("")}${notices}${tags(p.tech)}`,
+  });
+  sections.push({
+    id: "features",
+    label: t.cs.what,
+    html: `<ul class="feats">${pick(ctx, p.capabilities).map((x) => `<li>${feature(x)}</li>`).join("")}</ul>`,
+  });
+  if (p.requirements) sections.push({
+    id: "requirements",
+    label: t.cs.requirements,
+    html: `<ul class="plain plain--lg">${pick(ctx, p.requirements).map((x) => `<li>${inline(x)}</li>`).join("")}</ul>`,
+  });
+  if (p.quickstart?.length) sections.push({
+    id: "quickstart",
+    label: t.cs.run,
+    html: p.quickstart.map((q) => tw(pick(ctx, q.label), q.code, q.shell, q.note ? pick(ctx, q.note) : undefined)).join(""),
+  });
+  else if (p.usage) sections.push({ id: "quickstart", label: t.cs.run, html: list(pick(ctx, p.usage)) });
+  if (p.options?.length) sections.push({
+    id: "cli",
+    label: t.cs.cli,
+    html: `<div class="tbl" tabindex="0" role="region" aria-label="${esc(t.cs.cli)}"><table><thead><tr><th scope="col">${t.cs.option}</th><th scope="col">${t.cs.description}</th></tr></thead><tbody>${p.options
+      .map((o) => `<tr><th scope="row"><code>${esc(o.flag)}</code>${o.required ? `<span class="tbl__req">${t.cs.required}</span>` : ""}</th><td>${inline(pick(ctx, o.desc))}</td></tr>`)
+      .join("")}</tbody></table></div>`,
+  });
+  for (const tb of p.tables ?? []) sections.push({
+    id: tb.id,
+    label: pick(ctx, tb.title),
+    html: `${tb.lede ? `<p>${inline(pick(ctx, tb.lede))}</p>` : ""}<div class="tbl" tabindex="0" role="region" aria-label="${esc(pick(ctx, tb.title))}"><table><thead><tr>${tb.cols.map((c) => `<th scope="col">${esc(pick(ctx, c))}</th>`).join("")}</tr></thead><tbody>${tb.rows
+      .map((r) => `<tr>${r.map((c, ci) => (ci === 0 ? `<th scope="row">${inline(pick(ctx, c))}</th>` : `<td>${inline(pick(ctx, c))}</td>`)).join("")}</tr>`)
+      .join("")}</tbody></table></div>`,
+  });
+  if (p.output) sections.push({
+    id: "output",
+    label: t.cs.output,
+    html: tw("stdout", p.output.code, "text", p.output.note ? pick(ctx, p.output.note) : undefined),
+  });
+  for (const x of p.extra ?? []) sections.push({
+    id: x.id,
+    label: pick(ctx, x.title),
+    html: `${(x.paras ? pick(ctx, x.paras) : []).map((v) => `<p>${inline(v)}</p>`).join("")}${x.list ? `<ul class="plain plain--lg">${pick(ctx, x.list).map((v) => `<li>${inline(v)}</li>`).join("")}</ul>` : ""}`,
+  });
   const resp = pick(ctx, p.responsible);
-  if (resp.length) sections.push({ id: "responsible", label: t.cs.responsible, html: list(resp) });
-  if (p.structure.length > 1) sections.push({
-    id: "anatomy",
+  if (resp.length) sections.push({
+    id: "security",
+    label: t.cs.responsible,
+    html: `<ul class="checks">${resp.map((x) => `<li>${feature(x)}</li>`).join("")}</ul>`,
+  });
+  if (p.testing) sections.push({
+    id: "tests",
+    label: t.cs.tests,
+    html: tw(t.cs.tests, p.testing.cmd) + pick(ctx, p.testing.text).map((x) => `<p>${inline(x)}</p>`).join(""),
+  });
+  if (p.roadmap?.length) sections.push({
+    id: "roadmap",
+    label: t.cs.roadmap,
+    html: `<ul class="road">${p.roadmap
+      .map((r) => `<li class="${r.done ? "is-done" : ""}"><span class="road__mark" aria-hidden="true"></span><span class="sr-only">${r.done ? t.cs.done : t.cs.planned}: </span>${inline(pick(ctx, r.text))}</li>`)
+      .join("")}</ul>`,
+  });
+  if (p.troubleshooting?.length) sections.push({
+    id: "troubleshooting",
+    label: t.cs.troubleshooting,
+    html: `<dl class="faq">${p.troubleshooting
+      .map((q) => `<div><dt>${esc(pick(ctx, q.q))}</dt><dd><p>${inline(pick(ctx, q.a))}</p>${q.cmd ? cmdLine(q.cmd) : ""}</dd></div>`)
+      .join("")}</dl>`,
+  });
+  if (p.tree) sections.push({ id: "structure", label: t.cs.anatomy, html: tw(p.tree.split("\n")[0] ?? "", p.tree, "text") });
+  else if (p.structure && p.structure.length > 1) sections.push({
+    id: "structure",
     label: t.cs.anatomy,
     html: `<ul class="tree">${p.structure.map((s) => `<li>${esc(s)}</li>`).join("")}</ul>`,
   });
@@ -102,22 +178,26 @@ export const caseStudyFrame = (ctx: RenderContext, p: Project): PageFrame => {
         `<section class="cs__block" id="${s.id}" data-reveal><h2 class="cs__label">${esc(s.label)}</h2><div class="cs__body">${s.html}</div></section>`,
     )
     .join("");
+  const n = String(idx + 1).padStart(2, "0");
 
   const body = `${progress}<article class="cs">
   <div class="wrap">
     <nav class="crumbs" aria-label="Breadcrumb">
       <a href="${sectionHref(ctx, "work")}">${icons.arrowRight}<span>${t.cs.crumb}</span></a>
     </nav>
-    <header class="cs__head" data-rise style="--d:0">
-      <p class="eyebrow">${esc(pick(ctx, p.category))} — ${t.cs.tag}</p>
-      <h1 class="cs__title">${esc(p.name)}</h1>
-      <p class="cs__tag">${esc(pick(ctx, p.tagline))}</p>
-      <div class="cs__cta">
-        ${siteConfig.showRepoLinks ? `<a class="btn btn--primary" href="${esc(p.repo)}" target="_blank" rel="noopener noreferrer">${t.cs.viewRepo} ${icons.arrowUpRight}</a>` : ""}
-        ${p.demo ? `<a class="btn btn--ghost" href="${esc(p.demo)}" target="_blank" rel="noopener noreferrer">${t.cs.demo} ${icons.arrowUpRight}</a>` : ""}
+    <header class="cs__hero" data-rise style="--d:0">
+      <div class="cs__hero-main">
+        <p class="cs__kicker"><span>0x${n}</span>${esc(pick(ctx, p.category))} · ${t.cs.tag}</p>
+        <h1 class="cs__title">${esc(p.name)}</h1>
+        <p class="cs__tag">${esc(pick(ctx, p.tagline))}</p>
+        <div class="cs__cta">
+          ${siteConfig.showRepoLinks ? `<a class="btn btn--primary" href="${esc(p.repo)}" target="_blank" rel="noopener noreferrer">${t.cs.viewRepo} ${icons.arrowUpRight}</a>` : ""}
+          ${p.demo ? `<a class="btn btn--ghost" href="${esc(p.demo)}" target="_blank" rel="noopener noreferrer">${t.cs.demo} ${icons.arrowUpRight}</a>` : ""}
+        </div>
       </div>
+      ${p.cmd ? `<div class="cs__hero-term">${cmdLine(p.cmd, true)}</div>` : ""}
+      <dl class="cs__facts">${facts}</dl>
     </header>
-    <dl class="cs__facts" data-rise style="--d:1">${facts}</dl>
     <div class="cs__layout">
       <aside class="toc" aria-label="${esc(t.cs.toc)}">
         <p class="eyebrow toc__title">${t.cs.toc}</p>
@@ -136,6 +216,16 @@ export const caseStudyFrame = (ctx: RenderContext, p: Project): PageFrame => {
       title: `${p.name} — ${siteConfig.name}`,
       description: `${pick(ctx, p.tagline)} ${t.cs.tag}: ${siteConfig.name}.`,
       path: `work/${p.slug}`,
+      jsonLd: {
+        "@context": "https://schema.org",
+        "@type": "SoftwareSourceCode",
+        name: p.name,
+        description: pick(ctx, p.purpose).replaceAll("`", ""),
+        codeRepository: p.repo,
+        programmingLanguage: p.languages,
+        ...(p.license ? { license: `https://opensource.org/licenses/${p.license}` } : {}),
+        author: { "@type": "Person", name: siteConfig.name },
+      },
     },
     body,
   };

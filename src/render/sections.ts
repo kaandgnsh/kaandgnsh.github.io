@@ -6,7 +6,7 @@ import { githubSnapshot, siteConfig, socialLinks } from "../data/site.ts";
 import { ui } from "../i18n/ui.ts";
 import type { Project } from "../types.ts";
 import { icons } from "./icons.ts";
-import { asset, cmdLine, emph, esc, fmtDate, href, pick, sectionHref } from "./util.ts";
+import { asset, cmdLine, emph, esc, fmtDate, href, inline, pick, sectionHref } from "./util.ts";
 import type { RenderContext } from "./util.ts";
 
 export const visibleProjects = (): Project[] => projects.filter((p) => !p.hidden);
@@ -32,35 +32,40 @@ export const renderHero = (ctx: RenderContext): string => {
   const t = ui[ctx.lang];
   const git = socialLinks.find((s) => s.id === "github");
   const li = socialLinks.find((s) => s.id === "linkedin");
-  // The card answers what a first-time visitor scans for: studies, latest
-  // work, latest writing. Name and role are already above it.
-  const project = visibleProjects().find((p) => p.caseStudy);
-  const post = publishedPosts()[0];
-  const rows = [
-    [
-      t.hero.studying,
-      `${esc(pick(ctx, siteConfig.education.program))} · ${esc(pick(ctx, siteConfig.education.year))}<small>${esc(pick(ctx, siteConfig.education.university))}</small>`,
-    ],
-    project
-      ? [t.hero.building, `<a class="spec__link" href="${href(ctx, `work/${project.slug}`)}">${esc(project.name)}</a><small>${esc(pick(ctx, project.tagline))}</small>`]
-      : [t.hero.focus, pick(ctx, siteConfig.focus).map(esc).join(" · ")],
-    post
-      ? [t.hero.writing, `<a class="spec__link" href="${href(ctx, `notes/${post.slug}`)}">${esc(pick(ctx, post.title))}</a><small><time datetime="${post.date}">${esc(fmtDate(post.date, ctx.lang))}</time></small>`]
-      : [t.hero.focus, `<a class="spec__link" href="${sectionHref(ctx, "security")}">${pick(ctx, siteConfig.focus).map(esc).join(" · ")}</a>`],
-  ]
-    .map(([k, v]) => `<div class="spec__row"><dt>${k}</dt><dd>${v}</dd></div>`)
-    .join("");
+  // A short shell session: who, what for, and the work itself. Commands
+  // "type" in sequence (CSS only); every line is real, readable text.
+  const projects = visibleProjects().filter((p) => p.caseStudy);
+  let clock = 700;
+  const cmd = (text: string): string => {
+    const at = clock;
+    clock += text.length * 55 + 260;
+    return `<p class="hterm__cmd"><span class="hterm__p" aria-hidden="true">$</span> <span class="hterm__type" style="--t:${at}ms;--n:${text.length}">${esc(text)}</span></p>`;
+  };
+  const out = (html: string, cls = ""): string => {
+    const at = clock;
+    clock += 320;
+    return `<div class="hterm__out${cls}" style="--t:${at}ms">${html}</div>`;
+  };
+  const photo = siteConfig.photo
+    ? `<img class="hterm__photo" src="${esc(asset(ctx, siteConfig.photo.avatar ?? siteConfig.photo.src))}" alt="" width="44" height="44" decoding="async">`
+    : "";
+  const session = [
+    cmd("whoami"),
+    out(`${photo}<div><strong>${esc(siteConfig.name)}</strong><span>${esc(pick(ctx, siteConfig.education.program))} · ${esc(pick(ctx, siteConfig.education.year))}</span><span>${esc(pick(ctx, siteConfig.education.university))}</span></div>`, " hterm__who"),
+    cmd("cat focus.txt"),
+    out(`<a href="${sectionHref(ctx, "security")}">${pick(ctx, siteConfig.focus).map(esc).join(" · ")}</a>`),
+    cmd("ls ~/projects"),
+    out(`<ul class="hterm__ls">${projects.map((p) => `<li><a href="${href(ctx, `work/${p.slug}`)}">${esc(p.slug)}/</a></li>`).join("")}</ul>`),
+  ].join("");
+  const last = `<p class="hterm__cmd hterm__end" style="--t:${clock}ms"><span class="hterm__p" aria-hidden="true">$</span> <span class="caret" aria-hidden="true"></span></p>`;
   const status = siteConfig.openToInternship
     ? `<a class="hero__status" href="${sectionHref(ctx, "contact")}" data-rise style="--d:0"><span class="dot dot--live" aria-hidden="true"></span><span>${t.hero.internship}</span></a>`
-    : "";
-  const photo = siteConfig.photo
-    ? `<img class="idcard__photo" src="${esc(asset(ctx, siteConfig.photo.avatar ?? siteConfig.photo.src))}" alt="" width="52" height="52" decoding="async">`
     : "";
   return `<section class="hero" aria-labelledby="hero-title">
   <div class="wrap">
     ${status}
     <h1 class="hero__title" id="hero-title" data-rise style="--d:1">${esc(siteConfig.name)}</h1>
-    <p class="hero__role" data-rise style="--d:2"><span>${t.hero.roleA}</span><span class="sep" aria-hidden="true">/</span><span>${t.hero.roleB}<span class="caret" aria-hidden="true"></span></span></p>
+    <p class="hero__role" data-rise style="--d:2"><span>${t.hero.roleA}</span><span class="sep" aria-hidden="true">/</span><span>${t.hero.roleB}</span></p>
     <div class="hero__grid" data-rise style="--d:3">
       <div class="hero__copy">
         <p class="hero__statement">${esc(pick(ctx, siteConfig.statement))}</p>
@@ -72,13 +77,31 @@ export const renderHero = (ctx: RenderContext): string => {
           <a class="chip" href="${esc(li?.href ?? "")}" target="_blank" rel="noopener noreferrer">${icons.linkedin}<span>LinkedIn</span>${icons.arrowUpRight}</a>
         </div>
       </div>
-      <div class="idcard" role="group" aria-label="${esc(t.hero.glance)}">
-        <div class="idcard__bar" aria-hidden="true"><span class="idcard__dots"><i></i><i></i><i></i></span><span class="idcard__cmd"><b>$</b> whoami</span></div>
-        <div class="idcard__head">${photo}<div><p class="idcard__name">${esc(siteConfig.name)}</p><p class="idcard__meta">${esc(siteConfig.showLocation ? siteConfig.location : pick(ctx, siteConfig.education.program))}</p></div></div>
-        <dl class="spec">${rows}</dl>
+      <div class="hterm" role="group" aria-label="${esc(t.hero.glance)}">
+        <div class="hterm__bar" aria-hidden="true"><span class="tw__dots"><i></i><i></i><i></i></span><span>kaan@ostim: ~</span><span class="hterm__sh">zsh</span></div>
+        <div class="hterm__body">${session}${last}</div>
       </div>
     </div>
   </div>
+</section>`;
+};
+
+/* ───────────── Proof strip ───────────── */
+/** Four checkable numbers, all computed from the project data. */
+export const renderProof = (ctx: RenderContext): string => {
+  const t = ui[ctx.lang];
+  const ps = visibleProjects().filter((p) => p.caseStudy);
+  const pad = (v: number): string => String(v).padStart(2, "0");
+  const items = [
+    [pad(ps.length), t.proof.tools],
+    [`${ps.filter((p) => p.ci).length}/${ps.length}`, t.proof.ci],
+    [`${ps.filter((p) => p.safeDefault).length}/${ps.length}`, t.proof.safe],
+    ["0", t.proof.privacy],
+  ];
+  return `<section class="proof" aria-label="${esc(t.proof.label)}">
+  <div class="wrap"><dl class="proof__grid">${items
+    .map(([n, k], i) => `<div data-reveal><dt class="proof__n">${n}</dt><dd class="proof__k">${esc(k ?? "")}</dd><span class="proof__i" aria-hidden="true">0x${pad(i + 1)}</span></div>`)
+    .join("")}</dl></div>
 </section>`;
 };
 
@@ -105,7 +128,8 @@ export const renderWork = (ctx: RenderContext, num: string): string => {
   </div>
   <h3 class="card__name"><a href="${href(ctx, `work/${p.slug}`)}" class="card__link">${esc(p.name)}</a></h3>
   <p class="card__tag">${esc(pick(ctx, p.tagline))}</p>
-  <p class="card__purpose">${esc(pick(ctx, p.purpose))}</p>
+  <p class="card__purpose">${inline(pick(ctx, p.purpose))}</p>
+  ${p.safeDefault ? `<p class="card__safe">${icons.shield}<span>${inline(pick(ctx, p.safeDefault))}</span></p>` : ""}
   ${tags(p.tech)}
   ${p.cmd ? cmdLine(p.cmd) : ""}
   <div class="card__foot">
@@ -238,7 +262,7 @@ export const renderSecurity = (ctx: RenderContext, num: string): string => {
 </li>`;
     })
     .join("");
-  return `<section class="sec" id="security" aria-labelledby="security-title">
+  return `<section class="sec sec--ink" id="security" aria-labelledby="security-title">
   <div class="wrap">
     ${heading(num, "security", t.security.eyebrow, t.security.title, t.security.lede)}
     <div class="tenets" data-reveal>
@@ -377,6 +401,7 @@ export const renderHomeBody = (ctx: RenderContext): string => {
   const num = (id: string): string => n[id] ?? "";
   return [
     renderHero(ctx),
+    renderProof(ctx),
     renderWork(ctx, num("work")),
     renderSecurity(ctx, num("security")),
     renderAbout(ctx, num("about")),

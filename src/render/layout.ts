@@ -285,6 +285,8 @@ const renderPalette = (ctx: RenderContext, path: string): string => {
     lang: ctx.lang,
     strings: {
       copied: t.contact.copied,
+      codeCopy: t.cs.copy,
+      codeCopied: t.cs.copied,
       copy: t.contact.copy,
       copiedLive: t.contact.copiedLive,
       live: t.github.live,

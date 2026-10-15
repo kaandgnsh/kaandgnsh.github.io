@@ -24,6 +24,7 @@ export const icons = {
   arrowUpRight: base(`<path d="M7 17 17 7M8.5 7H17v8.5" ${stroke}/>`),
   arrowRight: base(`<path d="M5 12h14m-5-5 5 5-5 5" ${stroke}/>`),
   arrowDown: base(`<path d="M12 5v14m-5-5 5 5 5-5" ${stroke}/>`),
+  shield: base(`<path ${stroke} d="M12 3.2 19 6v5.2c0 4.4-2.9 8.2-7 9.6-4.1-1.4-7-5.2-7-9.6V6l7-2.8Z"/><path ${stroke} d="m9.2 12.1 1.9 1.9 3.8-3.9"/>`),
   arrowUp: base(`<path d="M12 19V5m-5 5 5-5 5 5" ${stroke}/>`),
   copy: base(
     `<rect x="9" y="9" width="11" height="11" rx="2.5" ${stroke}/><path d="M5 15V6.5A2.5 2.5 0 0 1 7.5 4H15" ${stroke}/>`,
