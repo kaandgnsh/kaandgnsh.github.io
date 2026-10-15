@@ -1,0 +1,12 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Siteyi Chrome'da aç (F5)",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:4173",
+      "preLaunchTask": "Siteyi çalıştır (dev)"
+    }
+  ]
+}

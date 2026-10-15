@@ -1,0 +1,23 @@
+{
+  "name": "kaan-dogan-portfolio",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Kaan Doğan — personal digital identity. Software Engineering & Cybersecurity. (EN/TR)",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "build": "node scripts/build.mjs",
+    "start": "node scripts/serve.mjs",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "import:linkedin": "node scripts/import-linkedin.mjs",
+    "check": "npm run lint && npm run typecheck && npm run build"
+  },
+  "devDependencies": {
+    "eslint": "^9.0.0",
+    "typescript": "^5.9.0"
+  }
+}

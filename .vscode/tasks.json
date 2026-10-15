@@ -1,0 +1,20 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Siteyi çalıştır (dev)",
+      "type": "npm",
+      "script": "dev",
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "site",
+        "pattern": { "regexp": "^$" },
+        "background": { "activeOnStart": true, "beginsPattern": "^built ", "endsPattern": "^http://localhost" }
+      },
+      "presentation": { "reveal": "always", "panel": "dedicated" },
+      "group": { "kind": "build", "isDefault": true }
+    },
+    { "label": "Derle (dist/)", "type": "npm", "script": "build", "problemMatcher": [] },
+    { "label": "Kontrol (tip + lint + derleme)", "type": "npm", "script": "check", "problemMatcher": ["$tsc"] }
+  ]
+}

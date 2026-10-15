@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+<!-- Source sketch of public/og-*.png. The PNGs are rendered with the site's own fonts (Newsreader, Inter). -->
+<rect width="1200" height="630" fill="#f4efe6"/>
+<rect x="80" y="72" width="60" height="60" rx="15" fill="#0f5b3f"/>
+<path d="M102 87v30M117 87l-11.7 11.7M107.4 96.6 117.6 117" fill="none" stroke="#f4efe6" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="76" y="300" font-family="Newsreader, Georgia, serif" font-size="128" fill="#17201b" letter-spacing="-4">Kaan Doğan</text>
+<text x="80" y="386" font-family="Newsreader, Georgia, serif" font-style="italic" font-size="40" fill="#474f49">__LINE__</text>
+<rect y="534" width="1200" height="96" fill="#0d2c21"/>
+<text x="80" y="590" font-family="Inter, Helvetica, Arial, sans-serif" font-size="22" fill="#ece5d6">__ROLE__</text>
+<text x="1120" y="590" text-anchor="end" font-family="Inter, Helvetica, Arial, sans-serif" font-size="22" fill="#bcc4b9">OSTİM Technical University</text>
+</svg>
