@@ -23,6 +23,8 @@ export interface Photo {
 }
 
 export interface SiteConfig {
+  /** Long-term career goal, shown in About. */
+  goal: L;
   name: string;
   brand: string;
   initials: string;
@@ -73,6 +75,8 @@ export interface Project {
   category: L;
   languages: string[];
   tech: string[];
+  /** One real command from the README, shown as a terminal line. */
+  cmd?: string;
   /** Capabilities listed in the repository README. */
   capabilities: L<string[]>;
   usage: L<string[]>;
@@ -94,11 +98,10 @@ export interface Project {
   hidden?: boolean;
 }
 
-/** "work" = used in public projects or notes; "familiar" = known, not yet in public work. */
+/** A language or tool, linked to the work that uses it. */
 export interface Skill {
   name: L;
-  tier: "work" | "familiar";
-  /** One factual line on how it is used. Shown for "work" entries. */
+  /** One factual line on how it is used. */
   detail?: L;
   /** Project or note slugs that show it in use. */
   evidence?: string[];
@@ -107,7 +110,6 @@ export interface Skill {
 export interface FocusArea {
   name: L;
   note: L;
-  status: "work" | "studying";
   evidence: string[];
 }
 

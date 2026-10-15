@@ -10,7 +10,8 @@ const rootDir = resolve(here, "..");
 const out = resolve(rootDir, process.env.OUT_DIR || "dist");
 const siteUrl = (process.env.SITE_URL || "").replace(/\/+$/, "");
 const fileLinks = process.env.FILE_LINKS === "1";
-const buildDate = process.env.BUILD_DATE || new Date().toISOString().slice(0, 10);
+// Local calendar date (sv-SE formats as YYYY-MM-DD), so the stamp matches the day it was built.
+const buildDate = process.env.BUILD_DATE || new Date().toLocaleDateString("sv-SE");
 
 const { renderDocument } = await import("../src/render/layout.ts");
 const pages = await import("../src/render/pages.ts");
@@ -134,8 +135,8 @@ if (siteUrl) {
   exp.setUTCFullYear(exp.getUTCFullYear() + 1);
   emit(
     ".well-known/security.txt",
-    `# I'm a student, not a company: there is no bounty and no SLA.
-# If you find something wrong with this site, I'd genuinely like to hear it.
+    `# Found a security issue on this site? Please report it by email.
+# Reports in English or Turkish are welcome.
 Contact: mailto:${siteConfig.email}
 Expires: ${exp.toISOString().replace(/\.\d+Z$/, "Z")}
 Preferred-Languages: en, tr

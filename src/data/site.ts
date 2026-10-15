@@ -10,16 +10,16 @@ export const siteConfig: SiteConfig = {
   brand: "Kaan Doğan",
   initials: "K.D.",
   title: {
-    en: "Kaan Doğan — Software Engineering & Cybersecurity",
-    tr: "Kaan Doğan — Yazılım Mühendisliği ve Siber Güvenlik",
+    en: "Kaan Doğan — Cybersecurity & Software Engineering",
+    tr: "Kaan Doğan — Siber Güvenlik ve Yazılım Mühendisliği",
   },
   description: {
-    en: "Software engineering student working where code meets security. Selected projects, focus areas and notes by Kaan Doğan.",
-    tr: "Kod ile güvenliğin kesiştiği yerde çalışan yazılım mühendisliği öğrencisi. Kaan Doğan’ın seçilmiş projeleri, odak alanları ve notları.",
+    en: "Software engineering student working towards a career in cybersecurity. Security tools, case studies and focus areas by Kaan Doğan.",
+    tr: "Siber güvenlik alanında uzmanlaşmayı hedefleyen yazılım mühendisliği öğrencisi. Kaan Doğan’ın güvenlik araçları, proje incelemeleri ve odak alanları.",
   },
   headline: {
-    en: "First-year Software Engineering student at OSTİM Technical University. I write small security tools and study how systems and networks fail.",
-    tr: "OSTİM Teknik Üniversitesi’nde birinci sınıf Yazılım Mühendisliği öğrencisiyim. Küçük güvenlik araçları yazıyor, sistemlerin ve ağların nasıl bozulduğunu inceliyorum.",
+    en: "First-year Software Engineering student at OSTİM Technical University, working towards a career in cybersecurity. I build security tools in Python and study how systems and networks fail.",
+    tr: "OSTİM Teknik Üniversitesi’nde birinci sınıf Yazılım Mühendisliği öğrencisiyim; hedefim siber güvenlik alanında uzmanlaşmak. Python ile güvenlik araçları geliştiriyor, sistemlerin ve ağların nasıl bozulduğunu inceliyorum.",
   },
   statement: {
     en: "How software is built, how it breaks, and how to secure it.",
@@ -47,9 +47,12 @@ export const siteConfig: SiteConfig = {
   github: { username: "kaandgnsh", url: "https://github.com/kaandgnsh" },
   linkedin: { url: "https://www.linkedin.com/in/kaan-doğan-911663280/" },
   instagram: { url: "https://www.instagram.com/kaandgn.sh/" },
+  // Security specialties, shown on the hero card. Each is backed by a project.
+  // From the GitHub profile README.
+  goal: { en: "Cybersecurity specialist", tr: "Siber güvenlik uzmanı" },
   focus: {
-    en: ["Software Engineering", "Cybersecurity"],
-    tr: ["Yazılım Mühendisliği", "Siber Güvenlik"],
+    en: ["Network security", "OSINT", "Secure tooling"],
+    tr: ["Ağ güvenliği", "OSINT", "Güvenli araç geliştirme"],
   },
   // From the "Currently learning" list on the GitHub profile README.
   currentlyLearning: {
@@ -73,11 +76,11 @@ export const siteConfig: SiteConfig = {
   about: {
     en: [
       "I’m a first-year Software Engineering student at OSTİM Technical University. I don’t like treating systems as black boxes. I want to know what a program does while it runs, what a network does with a packet, and where the assumptions in either one stop holding.",
-      "That’s what pulled me towards security. Most of what I build is small tooling written in Python while learning how things behave: utilities that poke at a system and report back. They’re early, and I present them that way. The next few years are about turning that curiosity into craft: solid software engineering first, with security as the lens I apply to it.",
+      "That’s what pulled me towards security. Most of what I build is security tooling in Python: utilities that probe a system and report what they find. The next few years are about turning that curiosity into craft: solid software engineering first, with security as the lens I apply to it.",
     ],
     tr: [
       "OSTİM Teknik Üniversitesi’nde Yazılım Mühendisliği okuyan birinci sınıf öğrencisiyim. Sistemlere kara kutu gibi bakmayı sevmiyorum. Bir program çalışırken ne yapıyor, bir ağ paketle ne yapıyor, ikisinde de varsayımlar nerede çöküyor; bunları bilmek istiyorum.",
-      "Beni güvenliğe çeken de bu oldu. Yaptığım işlerin çoğu, bir şeylerin nasıl davrandığını öğrenirken Python ile yazdığım küçük araçlar: bir sisteme dokunup sonucu raporlayan yardımcılar. Henüz erken aşamadalar ve öyle sunuyorum. Önümüzdeki yılların işi bu merakı zanaata çevirmek: önce sağlam yazılım mühendisliği, güvenliği de onu görmek için kullandığım mercek olarak.",
+      "Beni güvenliğe çeken de bu oldu. Geliştirdiğim işlerin çoğu Python ile yazılmış güvenlik araçları: bir sistemi inceleyip bulduklarını raporlayan yardımcılar. Önümüzdeki yılların işi bu merakı zanaata çevirmek: önce sağlam yazılım mühendisliği, güvenliği de onu görmek için kullandığım mercek olarak.",
     ],
   },
 };

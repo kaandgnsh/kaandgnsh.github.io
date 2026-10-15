@@ -25,10 +25,15 @@ export interface PageFrame {
   bodyClass?: string;
 }
 
-type NavId = "work" | "about" | "stack" | "credentials" | "notes" | "contact";
+/* Same policy as public/_headers, so it holds on any host. frame-ancestors
+   only works as a header and stays there. */
+const CSP =
+  "default-src 'self'; connect-src 'self' https://api.github.com; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'";
+
+type NavId = "work" | "security" | "about" | "stack" | "credentials" | "notes" | "contact";
 
 const navItems = (): NavId[] => {
-  const items: NavId[] = ["work", "about", "stack"];
+  const items: NavId[] = ["work", "security", "about", "stack"];
   if (credentials.length) items.push("credentials");
   if (publishedPosts().length) items.push("notes");
   items.push("contact");
@@ -53,7 +58,7 @@ export const renderHead = (ctx: RenderContext, o: HeadOptions): string => {
     name: siteConfig.name,
     jobTitle: "Software Engineering Student",
     alumniOf: { "@type": "CollegeOrUniversity", name: siteConfig.education.university.en },
-    knowsAbout: ["Software engineering", "Cybersecurity", "Linux", "Networking"],
+    knowsAbout: ["Cybersecurity", "Network security", "OSINT", "Software engineering", "Python", "Linux"],
     sameAs: [siteConfig.github.url, siteConfig.linkedin.url, siteConfig.instagram.url],
     ...(ctx.siteUrl ? { url: ctx.siteUrl } : {}),
   };
@@ -64,6 +69,8 @@ export const renderHead = (ctx: RenderContext, o: HeadOptions): string => {
   return `<head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="${CSP}">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <title>${esc(o.title)}</title>
 <meta name="description" content="${esc(o.description)}">
 <meta name="author" content="${esc(siteConfig.name)}">
@@ -196,13 +203,14 @@ export const renderFooter = (ctx: RenderContext): string => {
     <div class="footer__id">
       <a class="brand" href="${href(ctx)}" aria-label="${esc(siteConfig.name)}, ${t.nav.home}">${monogram()}<span class="brand__word">${esc(siteConfig.brand)}</span></a>
       <p class="footer__line">${esc(pick(ctx, siteConfig.statement))}</p>
+      <p class="footer__motto" aria-hidden="true">build · break · secure</p>
     </div>
     <nav aria-label="${t.footer.site}"><p class="eyebrow">${t.footer.site}</p><ul class="footer__list">${links}</ul></nav>
     <nav aria-label="${t.footer.elsewhere}"><p class="eyebrow">${t.footer.elsewhere}</p><ul class="footer__list">${social}</ul></nav>
   </div>
   <div class="wrap footer__base">
     <span>© ${new Date(ctx.buildDate).getUTCFullYear()} ${esc(siteConfig.name)}</span>
-    <p class="footer__stamp"><span>${t.footer.privacy}</span><span class="sep" aria-hidden="true">·</span><span>${t.footer.updated} <time datetime="${esc(ctx.buildDate.slice(0, 10))}">${esc(fmtDate(ctx.buildDate, ctx.lang, "long"))}</time></span></p>
+    <p class="footer__stamp"><span>${t.footer.privacy}</span><span class="sep" aria-hidden="true">·</span><a class="footer__sec" href="${asset(ctx, ".well-known/security.txt")}">security.txt</a><span class="sep" aria-hidden="true">·</span><span>${t.footer.updated} <time datetime="${esc(ctx.buildDate.slice(0, 10))}">${esc(fmtDate(ctx.buildDate, ctx.lang, "long"))}</time></span></p>
     <a href="#top" class="footer__top">${t.footer.top} ${icons.arrowUp}</a>
   </div>
 </footer>`;
@@ -225,7 +233,6 @@ const buildCommands = (ctx: RenderContext, path: string): Command[] => {
   for (const id of navItems()) {
     cmds.push({ id: `go-${id}`, group: t.palette.go, label: t.nav[id], href: sectionHref(ctx, id) });
   }
-  cmds.push({ id: "go-security", group: t.palette.go, label: t.palette.security, href: sectionHref(ctx, "security"), keywords: "pentest linux siem" });
   if (siteConfig.showGithubSection) cmds.push({ id: "go-github", group: t.palette.go, label: t.palette.githubSection, href: sectionHref(ctx, "github") });
   for (const p of projects.filter((x) => !x.hidden && (x.caseStudy || siteConfig.showRepoLinks))) {
     cmds.push({

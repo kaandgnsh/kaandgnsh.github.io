@@ -87,7 +87,7 @@ function init(): void {
       if (scrollY < 200) set(null);
     }, { passive: true });
   };
-  const homeIds = ["work", "about", "stack", "credentials", "notes", "contact"];
+  const homeIds = ["work", "security", "about", "stack", "credentials", "notes", "contact"];
   spy(
     $$<HTMLAnchorElement>("[data-nav-link]"),
     "navLink",

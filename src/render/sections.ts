@@ -6,7 +6,7 @@ import { githubSnapshot, siteConfig, socialLinks } from "../data/site.ts";
 import { ui } from "../i18n/ui.ts";
 import type { Project } from "../types.ts";
 import { icons } from "./icons.ts";
-import { asset, emph, esc, fmtDate, href, pick, sectionHref } from "./util.ts";
+import { asset, cmdLine, emph, esc, fmtDate, href, pick, sectionHref } from "./util.ts";
 import type { RenderContext } from "./util.ts";
 
 export const visibleProjects = (): Project[] => projects.filter((p) => !p.hidden);
@@ -19,12 +19,12 @@ const heading = (num: string, id: string, label: string, title: string, lede = "
 </header>`;
 
 export const sectionNumbers = (): Record<string, string> => {
-  const order = ["work", "about", "stack", "security"];
+  const order = ["work", "security", "about", "stack"];
   if (credentials.length) order.push("credentials");
   if (publishedPosts().length) order.push("notes");
   if (siteConfig.showGithubSection) order.push("github");
   order.push("contact");
-  return Object.fromEntries(order.map((id, i) => [id, String(i + 1).padStart(2, "0")]));
+  return Object.fromEntries(order.map((id, i) => [id, `0x${String(i + 1).padStart(2, "0")}`]));
 };
 
 /* ───────────── Hero ───────────── */
@@ -46,7 +46,7 @@ export const renderHero = (ctx: RenderContext): string => {
       : [t.hero.focus, pick(ctx, siteConfig.focus).map(esc).join(" · ")],
     post
       ? [t.hero.writing, `<a class="spec__link" href="${href(ctx, `notes/${post.slug}`)}">${esc(pick(ctx, post.title))}</a><small><time datetime="${post.date}">${esc(fmtDate(post.date, ctx.lang))}</time></small>`]
-      : [t.hero.learning, pick(ctx, siteConfig.currentlyLearning).slice(0, 3).map(esc).join("<br>")],
+      : [t.hero.focus, `<a class="spec__link" href="${sectionHref(ctx, "security")}">${pick(ctx, siteConfig.focus).map(esc).join(" · ")}</a>`],
   ]
     .map(([k, v]) => `<div class="spec__row"><dt>${k}</dt><dd>${v}</dd></div>`)
     .join("");
@@ -60,7 +60,7 @@ export const renderHero = (ctx: RenderContext): string => {
   <div class="wrap">
     ${status}
     <h1 class="hero__title" id="hero-title" data-rise style="--d:1">${esc(siteConfig.name)}</h1>
-    <p class="hero__role" data-rise style="--d:2"><span>${t.hero.roleA}</span><span class="sep" aria-hidden="true">/</span><span>${t.hero.roleB}</span></p>
+    <p class="hero__role" data-rise style="--d:2"><span>${t.hero.roleA}</span><span class="sep" aria-hidden="true">/</span><span>${t.hero.roleB}<span class="caret" aria-hidden="true"></span></span></p>
     <div class="hero__grid" data-rise style="--d:3">
       <div class="hero__copy">
         <p class="hero__statement">${esc(pick(ctx, siteConfig.statement))}</p>
@@ -73,6 +73,7 @@ export const renderHero = (ctx: RenderContext): string => {
         </div>
       </div>
       <div class="idcard" role="group" aria-label="${esc(t.hero.glance)}">
+        <div class="idcard__bar" aria-hidden="true"><span class="idcard__dots"><i></i><i></i><i></i></span><span class="idcard__cmd"><b>$</b> whoami</span></div>
         <div class="idcard__head">${photo}<div><p class="idcard__name">${esc(siteConfig.name)}</p><p class="idcard__meta">${esc(siteConfig.showLocation ? siteConfig.location : pick(ctx, siteConfig.education.program))}</p></div></div>
         <dl class="spec">${rows}</dl>
       </div>
@@ -106,6 +107,7 @@ export const renderWork = (ctx: RenderContext, num: string): string => {
   <p class="card__tag">${esc(pick(ctx, p.tagline))}</p>
   <p class="card__purpose">${esc(pick(ctx, p.purpose))}</p>
   ${tags(p.tech)}
+  ${p.cmd ? cmdLine(p.cmd) : ""}
   <div class="card__foot">
     <a class="textlink" href="${href(ctx, `work/${p.slug}`)}">${t.work.caseStudy} ${icons.arrowRight}</a>
     ${siteConfig.showRepoLinks ? `<a class="textlink textlink--quiet" href="${esc(p.repo)}" target="_blank" rel="noopener noreferrer">${t.work.github} ${icons.arrowUpRight}</a>` : ""}
@@ -171,6 +173,7 @@ export const renderAbout = (ctx: RenderContext, num: string): string => {
           ${location}
           <div><dt>${t.about.university}</dt><dd>${esc(pick(ctx, siteConfig.education.university))}</dd></div>
           <div><dt>${t.about.program}</dt><dd>${esc(pick(ctx, siteConfig.education.program))}, ${esc(pick(ctx, siteConfig.education.year))}</dd></div>
+          <div><dt>${t.about.goal}</dt><dd>${esc(pick(ctx, siteConfig.goal))}</dd></div>
         </dl>
       </aside>
     </div>
@@ -206,8 +209,7 @@ const evidence = (ctx: RenderContext, slugs: string[] = []): string => {
 /* ───────────── Stack ───────────── */
 export const renderStack = (ctx: RenderContext, num: string): string => {
   const t = ui[ctx.lang];
-  const work = skills
-    .filter((s) => s.tier === "work")
+  const items = skills
     .map(
       (s) => `<li class="skill" data-reveal>
   <h3 class="skill__name">${esc(pick(ctx, s.name))}</h3>
@@ -216,20 +218,10 @@ export const renderStack = (ctx: RenderContext, num: string): string => {
 </li>`,
     )
     .join("");
-  const familiar = skills.filter((s) => s.tier === "familiar");
   return `<section class="sec" id="stack" aria-labelledby="stack-title">
   <div class="wrap">
     ${heading(num, "stack", t.stack.eyebrow, t.stack.title, t.stack.lede)}
-    <h3 class="stack__cat" data-reveal>${t.stack.work}</h3>
-    <ul class="skills">${work}</ul>
-    ${
-      familiar.length
-        ? `<div class="familiar" data-reveal>
-      <div><h3 class="stack__cat">${t.stack.familiar}</h3><p class="familiar__note">${t.stack.familiarNote}</p></div>
-      <ul class="tags">${familiar.map((s) => `<li>${esc(pick(ctx, s.name))}</li>`).join("")}</ul>
-    </div>`
-        : ""
-    }
+    <ul class="skills">${items}</ul>
   </div>
 </section>`;
 };
@@ -240,7 +232,7 @@ export const renderSecurity = (ctx: RenderContext, num: string): string => {
   const items = focusAreas
     .map((a) => {
       return `<li class="focus__item" data-reveal>
-  <div class="focus__head"><h3>${esc(pick(ctx, a.name))}</h3><span class="status status--${a.status}">${a.status === "work" ? t.security.work : t.security.studying}</span></div>
+  <h3 class="focus__name">${esc(pick(ctx, a.name))}</h3>
   <p>${esc(pick(ctx, a.note))}</p>
   ${evidence(ctx, a.evidence)}
 </li>`;
@@ -249,6 +241,10 @@ export const renderSecurity = (ctx: RenderContext, num: string): string => {
   return `<section class="sec" id="security" aria-labelledby="security-title">
   <div class="wrap">
     ${heading(num, "security", t.security.eyebrow, t.security.title, t.security.lede)}
+    <div class="tenets" data-reveal>
+      <p class="eyebrow">${t.security.approach}</p>
+      <ol class="tenets__list">${t.security.tenets.map(([k = "", v = ""], i) => `<li><p class="tenets__k"><span>${String(i + 1).padStart(2, "0")}</span>${k}()</p><p class="tenets__v">${esc(v)}</p></li>`).join("")}</ol>
+    </div>
     <ul class="focus">${items}</ul>
     <aside class="notice" data-reveal role="note">
       <span class="dot dot--alert" aria-hidden="true"></span>
@@ -382,9 +378,9 @@ export const renderHomeBody = (ctx: RenderContext): string => {
   return [
     renderHero(ctx),
     renderWork(ctx, num("work")),
+    renderSecurity(ctx, num("security")),
     renderAbout(ctx, num("about")),
     renderStack(ctx, num("stack")),
-    renderSecurity(ctx, num("security")),
     credentials.length ? renderCredentials(ctx, num("credentials")) : "",
     renderNotes(ctx, num("notes")),
     siteConfig.showGithubSection ? renderGithub(ctx, num("github")) : "",

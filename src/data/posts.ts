@@ -11,6 +11,8 @@ import type { Post } from "../types.ts";
 export const posts: Post[] = [
   {
     slug: "before-the-page-loads",
+    // Blog section removed from the site; set to false (or delete) to publish again.
+    draft: true,
     date: "2026-10-06",
     title: {
       en: "What happens before a page loads",
@@ -54,6 +56,8 @@ export const posts: Post[] = [
   },
   {
     slug: "a-process-from-the-outside",
+    // Blog section removed from the site; set to false (or delete) to publish again.
+    draft: true,
     date: "2026-10-06",
     title: {
       en: "Looking at a Linux process from the outside",

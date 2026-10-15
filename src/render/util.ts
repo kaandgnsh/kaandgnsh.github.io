@@ -59,3 +59,10 @@ export const fmtDate = (iso: string, lang: Lang, month: "short" | "long" = "shor
     year: "numeric",
     timeZone: "UTC",
   }).format(new Date(`${iso.slice(0, 10)}T00:00:00Z`));
+
+/** A shell command whose lines break only between arguments, never inside one. */
+export const cmdLine = (cmd: string, lg = false): string =>
+  `<p class="term${lg ? " term--lg" : ""}"><span class="term__p" aria-hidden="true">$</span><code>${cmd
+    .split(" ")
+    .map((w) => `<span>${esc(w)}</span>`)
+    .join(" ")}</code></p>`;

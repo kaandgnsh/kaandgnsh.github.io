@@ -5,7 +5,7 @@ import type { Block, Post, Project } from "../types.ts";
 import { icons } from "./icons.ts";
 import type { PageFrame } from "./layout.ts";
 import { renderCredentialsBody, renderHomeBody, visibleProjects } from "./sections.ts";
-import { asset, esc, fmtDate, href, inline, pick, sectionHref } from "./util.ts";
+import { asset, cmdLine, esc, fmtDate, href, inline, pick, sectionHref } from "./util.ts";
 import type { RenderContext } from "./util.ts";
 
 export const homeFrame = (ctx: RenderContext): PageFrame => ({
@@ -58,7 +58,8 @@ export const caseStudyFrame = (ctx: RenderContext, p: Project): PageFrame => {
   const sections: Section[] = [];
   sections.push({ id: "overview", label: t.cs.overview, html: `<p>${esc(pick(ctx, p.purpose))}</p>${tags(p.tech)}` });
   sections.push({ id: "what", label: t.cs.what, html: list(pick(ctx, p.capabilities)) });
-  sections.push({ id: "run", label: t.cs.run, html: list(pick(ctx, p.usage)) });
+  const cmd = p.cmd ? cmdLine(p.cmd, true) : "";
+  sections.push({ id: "run", label: t.cs.run, html: cmd + list(pick(ctx, p.usage)) });
   const resp = pick(ctx, p.responsible);
   if (resp.length) sections.push({ id: "responsible", label: t.cs.responsible, html: list(resp) });
   if (p.structure.length > 1) sections.push({

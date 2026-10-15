@@ -38,6 +38,7 @@ export const projects: Project[] = [
     category: { en: "Security tooling", tr: "Güvenlik araçları" },
     languages: ["Python"],
     tech: ["Python 3.10+", "SQLite", "Provider architecture", "GitHub Actions"],
+    cmd: "python3 argus.py -domain example.com",
     capabilities: {
       en: [
         "Target types: usernames, email addresses, phone numbers, domains and DNS, IP addresses, URLs, hashes, GitHub profiles, threat indicators and local files",
@@ -98,12 +99,13 @@ export const projects: Project[] = [
       tr: "Yerel laboratuvarlar için, tasarımı gereği güvenli HTTP yanıt süresi analizcisi.",
     },
     purpose: {
-      en: "A small learning project for measuring HTTP response times and observing how services on your own machine behave. It began as a flood tool; the flood code was removed, and what remains is deliberately limited to loopback targets, one worker and a hard cap on requests.",
-      tr: "HTTP yanıt sürelerini ölçmek ve kendi makinendeki servislerin nasıl davrandığını gözlemlemek için küçük bir öğrenme projesi. Bir flood aracı olarak başladı; o kod kaldırıldı ve geriye kalan bilinçli olarak loopback hedeflerle, tek işçiyle ve katı bir istek sınırıyla kısıtlandı.",
+      en: "Measures HTTP response times and shows how services on your own machine behave. Its scope is deliberately limited to loopback targets, a single worker and a hard cap on requests.",
+      tr: "HTTP yanıt sürelerini ölçüyor ve kendi makinendeki servislerin nasıl davrandığını gösteriyor. Kapsamı bilinçli olarak loopback hedeflerle, tek işçiyle ve katı bir istek sınırıyla kısıtlı.",
     },
     category: { en: "Networking & testing", tr: "Ağ ve test" },
     languages: ["Python"],
     tech: ["Python 3.10+", "Standard library", "unittest", "GitHub Actions"],
+    cmd: "python m-dos/m-dos.py --url http://127.0.0.1:8000/ --duration 10",
     capabilities: {
       en: [
         "Measures each request’s latency in milliseconds and records the HTTP status",
@@ -132,11 +134,11 @@ export const projects: Project[] = [
     },
     responsible: {
       en: [
-        "Remote targets, flood modes, proxies, port scanning and concurrent workers are intentionally unsupported.",
+        "Remote targets, proxies, port scanning and concurrent workers are intentionally unsupported.",
         "Tests cover the safety checks themselves: loopback validation, rejected remote targets and schemes, and duration limits. CI runs them on Python 3.10, 3.11 and 3.12.",
       ],
       tr: [
-        "Uzak hedefler, flood modları, proxy’ler, port tarama ve eşzamanlı işçiler bilinçli olarak desteklenmiyor.",
+        "Uzak hedefler, proxy’ler, port tarama ve eşzamanlı işçiler bilinçli olarak desteklenmiyor.",
         "Testler güvenlik denetimlerinin kendisini kapsıyor: loopback doğrulaması, reddedilen uzak hedefler ve şemalar, süre sınırları. CI bunları Python 3.10, 3.11 ve 3.12’de çalıştırıyor.",
       ],
     },
@@ -158,12 +160,13 @@ export const projects: Project[] = [
       tr: "Kontrollü gizlilik laboratuvarları için çok arka uçlu IP yönlendirme ve proxy rotasyonu.",
     },
     purpose: {
-      en: "Rotates an application’s outgoing HTTP traffic through a user-supplied proxy list, or drives an existing Tor or anonsurf setup. It started as a small Anonsurf-style script and grew into a cross-platform tool that detects the operating system and picks a backend.",
-      tr: "Bir uygulamanın dışa giden HTTP trafiğini kullanıcının verdiği proxy listesi üzerinden döndürüyor ya da mevcut bir Tor veya anonsurf kurulumunu yönetiyor. Küçük, Anonsurf benzeri bir betik olarak başladı; işletim sistemini algılayıp arka ucu seçen, platformlar arası bir araca dönüştü.",
+      en: "Rotates an application’s outgoing HTTP traffic through a user-supplied proxy list, or drives an existing Tor or anonsurf setup. It runs across platforms, detecting the operating system and choosing a suitable backend.",
+      tr: "Bir uygulamanın dışa giden HTTP trafiğini kullanıcının verdiği proxy listesi üzerinden döndürüyor ya da mevcut bir Tor veya anonsurf kurulumunu yönetiyor. Platformlar arası çalışıyor; işletim sistemini algılayıp uygun arka ucu seçiyor.",
     },
     category: { en: "Privacy & networking", tr: "Gizlilik ve ağ" },
     languages: ["Python"],
     tech: ["Python 3.8+", "Tor control protocol", "Proxies", "GitHub Actions"],
+    cmd: "python3 hider.py --backend proxy --proxy-file ./proxies.txt --once",
     capabilities: {
       en: [
         "Tor, anonsurf and proxy-list backends, chosen automatically or by flag",
@@ -215,12 +218,12 @@ export const projects: Project[] = [
     name: "m-info-get",
     repo: gh("m-info-get"),
     tagline: {
-      en: "Multi-threaded OSINT utility, now at version 13.",
-      tr: "Çok iş parçacıklı OSINT aracı, şu an 13. sürümde.",
+      en: "Multi-threaded OSINT utility for phone number and username lookups.",
+      tr: "Telefon numarası ve kullanıcı adı sorguları için çok iş parçacıklı OSINT aracı.",
     },
     purpose: {
-      en: "A reconnaissance utility written to learn how open-source intelligence work is organised in practice, with parallel lookups so a run finishes quickly.",
-      tr: "Açık kaynak istihbaratı çalışmasının pratikte nasıl düzenlendiğini öğrenmek için yazılmış bir keşif aracı. Paralel sorgular sayesinde bir çalıştırma hızlı biter.",
+      en: "A reconnaissance utility that runs open-source intelligence lookups in parallel, so a full run finishes quickly.",
+      tr: "Açık kaynak istihbaratı sorgularını paralel çalıştıran bir keşif aracı; tam bir tarama bu sayede hızlı tamamlanıyor.",
     },
     category: { en: "Security tooling", tr: "Güvenlik araçları" },
     languages: ["Python"],
@@ -270,8 +273,8 @@ export const projects: Project[] = [
     name: "m-finder",
     repo: gh("m-finder"),
     tagline: {
-      en: "Command-line helper for finding a site’s admin panel, now at v4.",
-      tr: "Bir sitenin yönetim panelini bulmaya yardım eden komut satırı aracı, 4. sürümde.",
+      en: "Command-line tool for discovering a site’s administration pages.",
+      tr: "Bir sitenin yönetim sayfalarını tespit eden komut satırı aracı.",
     },
     purpose: {
       en: "A command-line utility that takes a site address, normalises it (adds the scheme when missing) and prints what it finds, depending on the scan type you choose.",
@@ -323,8 +326,8 @@ export const projects: Project[] = [
       tr: "Bir web sayfasının kaynağını seçtiğin isimle dosyaya kaydeder.",
     },
     purpose: {
-      en: "A small utility for grabbing the HTML source of a page for inspection: give it a link, name the file, optionally choose where to save it.",
-      tr: "Bir sayfanın HTML kaynağını incelemek için alan küçük bir araç: bir link ver, dosyayı adlandır, istersen kayıt yerini seç.",
+      en: "Saves the HTML source of a page for inspection: give it a link, name the file and optionally choose where to save it.",
+      tr: "Bir sayfanın HTML kaynağını incelemek için kaydeder: bir link ver, dosyayı adlandır, istersen kayıt yerini seç.",
     },
     category: { en: "Utility", tr: "Yardımcı araç" },
     languages: ["Python"],
