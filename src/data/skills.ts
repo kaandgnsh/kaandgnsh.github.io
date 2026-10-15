@@ -13,7 +13,7 @@ export const skills: Skill[] = [
       en: "Main language. Modular command-line tools, SQLite storage, input validation, concurrent lookups.",
       tr: "Ana dilim. Modüler komut satırı araçları, SQLite ile veri saklama, girdi doğrulama, eşzamanlı sorgular.",
     },
-    evidence: ["argus", "m-dos", "hider", "m-info-get"],
+    evidence: ["argus", "m-dos", "hider", "anon-message"],
   },
   {
     name: { en: "Secure coding", tr: "Güvenli kodlama" },
@@ -21,7 +21,7 @@ export const skills: Skill[] = [
       en: "Input and URL validation, bounded subprocesses and timeouts, credentials masked in logs, confirmation before system changes.",
       tr: "Girdi ve URL doğrulama, sınırlı alt süreçler ve zaman aşımları, günlüklerde maskelenen kimlik bilgileri, sistem değişikliklerinden önce onay.",
     },
-    evidence: ["argus", "m-dos", "hider"],
+    evidence: ["argus", "m-dos", "hider", "anon-message"],
   },
   {
     name: { en: "Linux & shell", tr: "Linux ve kabuk" },
@@ -57,7 +57,7 @@ export const focusAreas: FocusArea[] = [
       en: "Command-line tools for reconnaissance and privacy, built with safe defaults and explicit limits.",
       tr: "Keşif ve gizlilik için, güvenli varsayılanlar ve açık sınırlarla geliştirilmiş komut satırı araçları.",
     },
-    evidence: ["argus", "hider", "m-info-get"],
+    evidence: ["argus", "hider", "anon-message"],
   },
   {
     name: { en: "Web security", tr: "Web güvenliği" },
@@ -65,7 +65,7 @@ export const focusAreas: FocusArea[] = [
       en: "How sites expose information, and how that exposure is assessed.",
       tr: "Sitelerin bilgiyi nasıl açığa verdiği ve bunun nasıl değerlendirildiği.",
     },
-    evidence: ["argus", "m-finder"],
+    evidence: ["argus"],
   },
   {
     name: { en: "Network security", tr: "Ağ güvenliği" },

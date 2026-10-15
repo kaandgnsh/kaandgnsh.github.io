@@ -215,6 +215,8 @@ export const projects: Project[] = [
   },
   {
     slug: "m-info-get",
+    // No public repository on GitHub (checked 2026-10-16), so it stays off the site.
+    hidden: true,
     name: "m-info-get",
     repo: gh("m-info-get"),
     tagline: {
@@ -270,6 +272,8 @@ export const projects: Project[] = [
   },
   {
     slug: "m-finder",
+    // No public repository on GitHub (checked 2026-10-16), so it stays off the site.
+    hidden: true,
     name: "m-finder",
     repo: gh("m-finder"),
     tagline: {
@@ -319,6 +323,8 @@ export const projects: Project[] = [
   },
   {
     slug: "m-copy",
+    // No public repository on GitHub (checked 2026-10-16), so it stays off the site.
+    hidden: true,
     name: "m-copy",
     repo: gh("m-copy"),
     tagline: {
@@ -346,6 +352,41 @@ export const projects: Project[] = [
       { label: LANGUAGE, value: PYTHON },
       { label: COMMITS, value: n("3") },
     ],
+    caseStudy: false,
+  },
+  {
+    slug: "anon-message",
+    name: "anon-message",
+    repo: gh("anon-message"),
+    tagline: {
+      en: "Consent-first SMS notification CLI: dry-run by default, fails closed.",
+      tr: "Onay öncelikli SMS bildirim aracı: varsayılan olarak deneme modunda, hata durumunda güvenli tarafta kalıyor.",
+    },
+    purpose: {
+      en: "A command-line tool for sending individual, opt-in SMS notifications through Textbelt, built so that the sending path is explicit and testable without contacting the provider.",
+      tr: "Textbelt üzerinden, yalnızca onay vermiş alıcılara tekil SMS bildirimleri gönderen bir komut satırı aracı; gönderim yolu açık ve sağlayıcıya bağlanmadan test edilebilir.",
+    },
+    category: { en: "Secure tooling", tr: "Güvenli araçlar" },
+    languages: ["Python"],
+    tech: ["Python 3.10+", "HMAC", "unittest", "GitHub Actions"],
+    capabilities: {
+      en: [
+        "Dry-run by default; nothing is sent without --send",
+        "Local consent allowlist and conservative rate limits",
+        "Rate-limit state stores HMAC fingerprints, not phone numbers",
+        "Timeouts, redirects disabled, provider responses validated",
+      ],
+      tr: [
+        "Varsayılan olarak deneme modu; --send olmadan hiçbir şey gönderilmiyor",
+        "Yerel onay listesi ve temkinli hız sınırları",
+        "Hız sınırı durumu telefon numarası yerine HMAC parmak izi saklıyor",
+        "Zaman aşımları, kapalı yönlendirmeler, doğrulanan sağlayıcı yanıtları",
+      ],
+    },
+    usage: { en: [], tr: [] },
+    responsible: { en: [], tr: [] },
+    structure: ["anon-message/", "tests/", ".github/"],
+    facts: [{ label: LANGUAGE, value: PYTHON }],
     caseStudy: false,
   },
   {

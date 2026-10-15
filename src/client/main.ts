@@ -260,6 +260,10 @@ function init(): void {
     }, { signal });
   }
 
+  /* ── 404: show the address that was asked for ── */
+  const nfUrl = $<HTMLElement>("[data-nf-url]");
+  if (nfUrl) nfUrl.textContent = location.href;
+
   /* ── Reveal on scroll ── */
   const reveals = $$<HTMLElement>("[data-reveal]");
   if (reveals.length) {

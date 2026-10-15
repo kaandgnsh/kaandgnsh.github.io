@@ -250,6 +250,8 @@ export const notFoundFrame = (ctx: RenderContext): PageFrame => {
   <p class="eyebrow">404</p>
   <h1 class="h2">${en.heading}</h1>
   <p class="lede">${en.text} <span lang="tr">${tr.heading} ${tr.text}</span></p>
+  <pre class="term term--lg term--block" aria-hidden="true"><code><span class="term__p">$</span> curl -sI <span data-nf-url>${esc(ctx.siteUrl || "")}/…</span>
+<span class="term__out">HTTP/2 404 Not Found</span></code></pre>
   <p class="nf__cta"><a class="btn btn--primary" href="${href(ctx, "", "en")}">${en.home}</a> <a class="btn btn--ghost" href="${href(ctx, "", "tr")}" lang="tr">${tr.home}</a></p>
 </div></section>`,
   };

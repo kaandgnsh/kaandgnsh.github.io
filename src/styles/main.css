@@ -104,6 +104,8 @@
   --shadow-1: 0 1px 0 var(--shadow-hi) inset, 0 1px 2px var(--shadow-ink);
   --shadow-2: 0 1px 0 var(--shadow-hi) inset, 0 18px 40px -22px var(--shadow-ink), 0 1px 2px var(--shadow-ink);
   --shadow-pop: 0 30px 80px -24px var(--shadow-ink), 0 1px 0 var(--shadow-hi) inset;
+  /* terminal ink: stays dark in both themes */
+  --term-bg: light-dark(#17221c, #0b0f0d); --term-fg: #dfe5da; --term-dim: #8f9c92; --term-p: var(--green-300);
 
   /* Motion: one curve, three durations */
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
@@ -623,13 +625,14 @@ a.row__link:hover .row__ic { color: var(--c-green); transform: translate(2px, -2
 /* ───────────── Security accents ─────────────
    A terminal ink that stays dark in both themes, used sparingly: the card
    title bar, real commands from each README, and the hero caret. */
-:root { --term-bg: light-dark(#17221c, #0b0f0d); --term-fg: #dfe5da; --term-dim: #8f9c92; --term-p: var(--green-300); }
 
 .term { display: flex; gap: 0.6rem; align-items: baseline; margin: 0; padding: 0.7rem 0.9rem; border-radius: var(--r-2); background: var(--term-bg); color: var(--term-fg); font: 400 var(--t-2xs)/1.55 var(--f-mono); border: 1px solid light-dark(transparent, var(--c-line-2)); box-shadow: 0 1px 0 rgb(255 255 255 / 0.04) inset; }
 .term code { padding: 0; border: 0; background: none; font-size: inherit; color: inherit; white-space: pre-wrap; overflow-wrap: anywhere; }
 .term code span { white-space: nowrap; }
 .term__p { color: var(--term-p); user-select: none; flex: none; }
 .term--lg { font-size: var(--t-xs); padding: 0.9rem 1.1rem; margin-bottom: var(--s-4); }
+.term--block { display: block; max-width: 40rem; margin: var(--s-6) 0 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.term__out { color: var(--brass-300); }
 .card .term { margin-top: var(--s-2); position: relative; z-index: 2; }
 @media (min-width: 820px) { .card:first-child:not(.card--media) .term { grid-column: 1 / -1; margin-top: var(--s-5); } }
 

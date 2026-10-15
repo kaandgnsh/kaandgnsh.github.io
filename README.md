@@ -43,7 +43,7 @@ Bileşenlere dokunmana gerek yok. Kişisel her şey `src/data/` ve `src/i18n/` i
 | --- | --- |
 | `src/data/site.ts` | Ad, e-posta, bağlantılar, giriş cümlesi, hakkımda metni, `openToInternship` (staja açığım satırı), `photo`, `cv`, `showRepoLinks`, `showGithubSection` |
 | `src/data/projects.ts` | Projeler. Her biri iki dilli. `caseStudy: true` ise kendi sayfası olur, `hidden: true` ise gizlenir |
-| `src/data/posts.ts` | Notlar (blog). Yeni bir nesne ekle; `draft: true` ise yayınlanmaz |
+| `src/data/posts.ts` | Eski notlar. Sitede blog bölümü yok; tüm yazılar `draft: true` ile kapalı tutuluyor |
 | `src/data/skills.ts` | Kullandıkların ve güvenlik ilgi alanların |
 | `src/data/credentials.ts` | Elle yazılan sertifikalar |
 | `src/i18n/ui.ts` | Sitedeki bütün arayüz metinleri, EN ve TR |
@@ -121,7 +121,7 @@ src/
   client/     tarayıcıda çalışan küçük betikler (tema, dil, komut paleti)
   styles/     main.css
 public/       fontlar, ikonlar, paylaşım görselleri, _headers
-scripts/      build / serve / dev / LinkedIn içe aktarma
+scripts/      build / serve / dev / LinkedIn içe aktarma / og.html (paylaşım görseli şablonu)
 dist/         derleme çıktısı (yayınlanan klasör)
 .vscode/      VS Code görevleri ve F5 ayarı
 ```

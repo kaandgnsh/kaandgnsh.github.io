@@ -166,7 +166,7 @@ export const renderAbout = (ctx: RenderContext, num: string): string => {
           <ul class="plain plain--cols">${pick(ctx, siteConfig.currentlyLearning).map((x) => `<li>${esc(x)}</li>`).join("")}</ul>
         </div>
       </div>
-      <aside class="about__aside" aria-label="${esc(t.about.facts)}">
+      <div class="about__aside">
         ${photo}
         <dl class="facts">
           <div><dt>${t.about.name}</dt><dd>${esc(siteConfig.name)}</dd></div>
@@ -175,7 +175,7 @@ export const renderAbout = (ctx: RenderContext, num: string): string => {
           <div><dt>${t.about.program}</dt><dd>${esc(pick(ctx, siteConfig.education.program))}, ${esc(pick(ctx, siteConfig.education.year))}</dd></div>
           <div><dt>${t.about.goal}</dt><dd>${esc(pick(ctx, siteConfig.goal))}</dd></div>
         </dl>
-      </aside>
+      </div>
     </div>
   </div>
 </section>`;
